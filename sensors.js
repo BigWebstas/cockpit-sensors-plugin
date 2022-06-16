@@ -16,6 +16,7 @@ function sensors_output(data) {
 	var current_adaptor = null;
 	var current_cpu = 0;
 	var current_gpu = 0;
+	var current_psu = 0;
 	var current_core = null;
 	
 	var lines = data.split('\n');
@@ -54,6 +55,17 @@ function sensors_output(data) {
 					var row = table.insertRow(-1);
 					row.innerHTML = "<td></td><td>Current</td><td>Max.</td><td>Crit.</td>";
 				}	
+			} else if (lines[i].startsWith('power')) {
+				current_adaptor = 'POWER' + current_psu;
+				if (init == false) {
+					var row = table.insertRow(-1);
+					var header = document.createElement("TH");
+					header.innerHTML = current_adaptor;
+					header.colSpan = "4";
+					row.append(header);
+					var row = table.insertRow(-1);
+					row.innerHTML = "<td></td><td>Current</td><td>Max.</td><td>Crit.</td>";
+				}				
                         } else if (lines[i].startsWith('cpu_thermal-virtual-0')) {
                                 current_adaptor = 'temp' + current_cpu;
                                 if (init == false) {
@@ -97,6 +109,58 @@ function sensors_output(data) {
 						var temp_crit = row.insertCell(-1);
 						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
 					}	
+				} else if (lines[i].startsWith('edge') || lines[i].startsWith('temp')) {
+					current_core = lines[i].replace(':', '');
+					if (init == false) {
+						var row = table.insertRow(-1);
+						var name = row.insertCell(-1);
+						name.innerHTML = current_core
+						var temp_current = row.insertCell(-1);
+						temp_current.id = current_adaptor + '-' + current_core + '-current';
+						var temp_max = row.insertCell(-1);
+						temp_max.id = current_adaptor + '-' + current_core + '-max';
+						var temp_crit = row.insertCell(-1);
+						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
+					}	
+				} else if (lines[i].startsWith('junction') || lines[i].startsWith('temp')) {
+					current_core = lines[i].replace(':', '');
+					if (init == false) {
+						var row = table.insertRow(-1);
+						var name = row.insertCell(-1);
+						name.innerHTML = current_core
+						var temp_current = row.insertCell(-1);
+						temp_current.id = current_adaptor + '-' + current_core + '-current';
+						var temp_max = row.insertCell(-1);
+						temp_max.id = current_adaptor + '-' + current_core + '-max';
+						var temp_crit = row.insertCell(-1);
+						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
+					}
+				} else if (lines[i].startsWith('fan') || lines[i].startsWith('fan')) {
+					current_core = lines[i].replace(':', '');
+					if (init == false) {
+						var row = table.insertRow(-1);
+						var name = row.insertCell(-1);
+						name.innerHTML = current_core
+						var temp_current = row.insertCell(-1);
+						temp_current.id = current_adaptor + '-' + current_core + '-current';
+						var temp_max = row.insertCell(-1);
+						temp_max.id = current_adaptor + '-' + current_core + '-max';
+						var temp_crit = row.insertCell(-1);
+						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
+					}
+				} else if (lines[i].startsWith('power') || lines[i].startsWith('power')) {
+					current_core = lines[i].replace(':', '');
+					if (init == false) {
+						var row = table.insertRow(-1);
+						var name = row.insertCell(-1);
+						name.innerHTML = current_core
+						var temp_current = row.insertCell(-1);
+						temp_current.id = current_adaptor + '-' + current_core + '-current';
+						var temp_max = row.insertCell(-1);
+						temp_max.id = current_adaptor + '-' + current_core + '-max';
+						var temp_crit = row.insertCell(-1);
+						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
+					}					
 				} else if (lines[i].startsWith(" ") && current_core != null) {
 					var bits = lines[i].split(":");
 					var id = current_adaptor + '-' + current_core + '-current';
@@ -110,6 +174,10 @@ function sensors_output(data) {
 						id = current_adaptor + '-' + current_core + '-current';
 					} else if (bits[0].endsWith('max')) {
 						id = current_adaptor + '-' + current_core + '-max';
+					} else if (bits[0].endsWith('average')) {
+						id = current_adaptor + '-' + current_core + '-current';	
+					} else if (bits[0].endsWith('cap')) {
+						id = current_adaptor + '-' + current_core + '-max';	
 					} else if (bits[0].endsWith('crit')) {
 						id = current_adaptor + '-' + current_core + '-crit';
 					}
