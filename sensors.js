@@ -43,7 +43,7 @@ function sensors_output(data) {
 					var row = table.insertRow(-1);
 					row.innerHTML = "<td></td><td>Current</td><td>Max.</td><td>Crit.</td>";
 				}	
-			} else if (lines[i].startsWith('radeon')) {
+			} else if (lines[i].startsWith('amdgpu')) {
 				current_adaptor = 'GPU' + current_gpu;
 				if (init == false) {
 					var row = table.insertRow(-1);
@@ -84,6 +84,19 @@ function sensors_output(data) {
 						var temp_crit = row.insertCell(-1);
 						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
 					}
+				} else if (lines[i].startsWith('mem') || lines[i].startsWith('temp')) {
+					current_core = lines[i].replace(':', '');
+					if (init == false) {
+						var row = table.insertRow(-1);
+						var name = row.insertCell(-1);
+						name.innerHTML = current_core
+						var temp_current = row.insertCell(-1);
+						temp_current.id = current_adaptor + '-' + current_core + '-current';
+						var temp_max = row.insertCell(-1);
+						temp_max.id = current_adaptor + '-' + current_core + '-max';
+						var temp_crit = row.insertCell(-1);
+						temp_crit.id = current_adaptor + '-' + current_core + '-crit';
+					}	
 				} else if (lines[i].startsWith(" ") && current_core != null) {
 					var bits = lines[i].split(":");
 					var id = current_adaptor + '-' + current_core + '-current';
